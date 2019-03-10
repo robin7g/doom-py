@@ -30,6 +30,8 @@
 #include <iostream>
 #include <Python.h>
 #include <boost/python.hpp>
+#include <boost/python/numpy.hpp>
+#include <boost/python/numpy/ndarray.hpp> 
 #include <numpy/ndarrayobject.h>
 #include <numpy/npy_math.h>
 #include <vector>
