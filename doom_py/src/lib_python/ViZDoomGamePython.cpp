@@ -26,7 +26,8 @@ namespace vizdoom {
 
     using boost::python::tuple;
     using boost::python::api::object;
-    using boost::python::numeric::array;
+    namespace py = boost::python;
+    namespace np = boost::python::numpy;
 
     #define PY_NONE object()
 
@@ -37,7 +38,6 @@ namespace vizdoom {
     #endif
     init_numpy()
     {
-        boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
         import_array();
     }
 
@@ -75,24 +75,24 @@ namespace vizdoom {
         return initSuccess;
     }
 
-    std::vector<int> DoomGamePython::pyListToIntVector(boost::python::list const &action)
+    std::vector<int> DoomGamePython::pyListToIntVector(py::list const &action)
     {
-        int listLength = boost::python::len(action);
+        int listLength = py::len(action);
         std::vector<int> properAction = std::vector<int>(listLength);
         for (int i = 0; i < listLength; i++) {
-            properAction[i] = boost::python::extract<int>(action[i]);
+            properAction[i] = py::extract<int>(action[i]);
         }
         return properAction;
     }
-    void DoomGamePython::setAction(boost::python::list const &action) {
+    void DoomGamePython::setAction(py::list const &action) {
         DoomGame::setAction(DoomGamePython::pyListToIntVector(action));
     }
 
-    double DoomGamePython::makeAction(boost::python::list const &action) {
+    double DoomGamePython::makeAction(py::list const &action) {
         return DoomGame::makeAction(DoomGamePython::pyListToIntVector(action));
     }
 
-    double DoomGamePython::makeAction(boost::python::list const &action, unsigned int tics) {
+    double DoomGamePython::makeAction(py::list const &action, unsigned int tics) {
         return DoomGame::makeAction(DoomGamePython::pyListToIntVector(action), tics);
     }
 
@@ -102,15 +102,15 @@ namespace vizdoom {
         }
 
         PyObject *img = PyArray_SimpleNewFromData(3, imageShape, NPY_UBYTE, DoomGame::getGameScreen());
-        boost::python::handle<> numpyImageHandle = boost::python::handle<>(img);
-        boost::python::numeric::array numpyImage = array(numpyImageHandle);
+        py::handle<> numpyImageHandle = py::handle<>(img);
+        
+        np::ndarray numpyImage = np::from_object(py::object(numpyImageHandle)); 
 
         if (this->state.gameVariables.size() > 0) {
             npy_intp varLen = this->state.gameVariables.size();
             PyObject *vars = PyArray_SimpleNewFromData(1, &varLen, NPY_INT32, this->state.gameVariables.data());
-            boost::python::handle<> numpyVarsHandle = boost::python::handle<>(vars);
-            boost::python::numeric::array numpyVars = array(numpyVarsHandle);
-
+            py::handle<> numpyVarsHandle = py::handle<>(vars);
+            np::ndarray numpyVars = np::from_object(py::object(numpyVarsHandle));            
             return GameStatePython(state.number, numpyImage.copy(), numpyVars.copy());
         }
         else {
@@ -119,8 +119,8 @@ namespace vizdoom {
 
     }
 
-    boost::python::list DoomGamePython::getLastAction() {
-        boost::python::list res;
+    py::list DoomGamePython::getLastAction() {
+        py::list res;
         for (std::vector<int>::iterator it = DoomGame::lastAction.begin(); it!=DoomGame::lastAction.end(); ++it)
         {
             res.append(*it);
@@ -130,8 +130,8 @@ namespace vizdoom {
 
     object DoomGamePython::getGameScreen(){
         PyObject *img = PyArray_SimpleNewFromData(3, imageShape, NPY_UBYTE, DoomGame::getGameScreen());
-        boost::python::handle<> numpyImageHandle = boost::python::handle<>(img);
-        boost::python::numeric::array numpyImage = array(numpyImageHandle);
+        py::handle<> numpyImageHandle = py::handle<>(img);
+        np::ndarray numpyImage = np::from_object(py::object(numpyImageHandle));        
         return numpyImage.copy();
     }
 

@@ -20,11 +20,13 @@
  THE SOFTWARE.
 */
 
+
 #include "ViZDoomGame.h"
 #include "ViZDoomController.h"
 #include "ViZDoomExceptions.h"
 #include "ViZDoomUtilities.h"
 
+#include <iostream>
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/trim_all.hpp>
 #include <boost/lexical_cast.hpp>
