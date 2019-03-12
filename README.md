@@ -1,4 +1,4 @@
-**Status:** Archive (code is provided as-is, no updates expected)
+**Status:** Updated March 12th 2019 to fix boost build problems. Archive (code is provided as-is, no updates expected)
 
 # doom_py
 
